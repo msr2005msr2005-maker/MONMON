@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
       trailing: IconButton(icon: const Icon(Icons.edit_square,color: primary),onPressed: compose),onTap: compose)),
     SizedBox(height: 98,child: ListView(scrollDirection: Axis.horizontal,children: [
       for(final n in [widget.username,...friends.take(5)]) Padding(padding: const EdgeInsets.all(6),child: Column(children: [
-        avatar(n,radius: 27),const SizedBox(height: 4),Text(n,style: const TextStyle(fontSize: 11))]))]),
+       avatar(n,radius: 27),const SizedBox(height: 4),Text(n,style: const TextStyle(fontSize: 11))]))])),
     for(final p in posts) Card(margin: const EdgeInsets.only(bottom: 12),child: Padding(padding: const EdgeInsets.all(14),child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
       Row(children: [avatar(p.author),const SizedBox(width: 10),Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
         Text(p.author,style: const TextStyle(fontWeight: FontWeight.bold)),const Text('الآن · 🌐',style: TextStyle(fontSize: 11,color: Colors.grey))])]),

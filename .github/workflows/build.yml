@@ -1,41 +1,25 @@
-MONMON APK
+name: Build MONMON APK
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+    - uses: subosito/flutter-action@v3
+      with:
+        flutter-version: '3.19.x'
+        channel: 'stable'
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+    - run: flutter pub get
+    - run: flutter build apk --release
 
-      - name: Generate Android project
-        run: flutter create --platforms=android --project-name monmon .
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: MONMON-APK
-          path: build/app/outputs
+    - uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: build/app/outputs/flutter-apk/app-release.apk

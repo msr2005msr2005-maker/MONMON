@@ -25,11 +25,11 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0' # أو الإصدار الذي تفضله
+          flutter-version: '3.19.0'
 
-      # هنا تم تعديل الأمر وإضافة البيئة البرمجية لمنع فحص المجلدات الفرعية القديمة تماماً
+      # هذا الأمر المعدل يجبر فلاتر على تخطي فحص مجلدات الأندرويد الداخلية أثناء جلب الحزم
       - name: Get dependencies
-        run: flutter pub get
+        run: flutter pub get --no-example
         env:
           PUB_CACHE: ${{ github.workspace }}/.pub-cache
           FLUTTER_SUPPRESS_ANALYTICS: "true"

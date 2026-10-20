@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "13450233483",
+    "project_id": "monmon-app-40cdd",
+    "storage_bucket": "monmon-app-40cdd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13450233483:android:6b86cd82e7088d77e9768e",
+        "android_client_info": {
+          "package_name": "com.example.monmon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSf09dBHtlAaFsFzKU5bCVNhW6WZv1aZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

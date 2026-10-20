@@ -25,7 +25,10 @@ jobs:
         channel: 'stable'
 
     - name: Get dependencies
-      run: flutter pub get --no-example
+  run: flutter pub get
+  env:
+    FLUTTER_SUPPRESS_ANALYTICS: true
+    
 
     - name: Build APK release
       run: flutter build apk --release

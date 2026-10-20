@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +34,20 @@ class MonmonApp extends StatelessWidget {
         scaffoldBackgroundColor: bg,
         fontFamily: 'GE SS Two',
       ),
-      home: const MainFeedScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.hasData) {
+            return const MainFeedScreen();
+          }
+          return const LoginScreen();
+        },
+      ),
     );
   }
 }
@@ -47,7 +62,7 @@ class MainFeedScreen extends StatefulWidget {
 class _MainFeedScreenState extends State<MainFeedScreen> {
   final List<Post> posts = [
     Post('أحمد محمد', 'أهلاً بكُم جميعاً في منصة MONMON الاجتماعية الجديدة! 🚀'),
-    Post('مؤمن سعد', 'جاري تطوير وتحديث ميزات التطبيق وربطه بقواعد البيانات بنجاح 🔥'),
+    Post('مؤمن سعد', 'تم تفعيل نظام تسجيل الدخول بنجاح تام وحماية الحسابات 🔥'),
   ];
 
   final TextEditingController _postController = TextEditingController();
@@ -55,9 +70,15 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   void _addPost() {
     if (_postController.text.trim().isEmpty) return;
     setState(() {
-      posts.insert(0, Post('مستخدم MONMON', _postController.text.trim()));
+      final user = FirebaseAuth.instance.currentUser;
+      final userName = user?.email ?? 'مستخدم MONMON';
+      posts.insert(0, Post(userName, _postController.text.trim()));
       _postController.clear();
     });
+  }
+
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -71,6 +92,13 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
           style: TextStyle(color: primary, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            onPressed: _logout,
+            tooltip: 'تسجيل الخروج',
+          ),
+        ],
       ),
       body: Column(
         children: [

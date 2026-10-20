@@ -1,5 +1,4 @@
-
-name: Build MONMON APK
+MONMON APK
 
 on:
   workflow_dispatch:
@@ -39,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MONMON-APK
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs

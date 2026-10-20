@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login_screen.dart';
+import 'profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +13,7 @@ void main() async {
 
 const primary = Color(0xFF365CF5);
 const ink = Color(0xFF122044);
-const bg = Color(0xFF4F7FD);
+const bg = Color(0xFFF4F7FD);
 
 class MonmonApp extends StatelessWidget {
   const MonmonApp({super.key});
@@ -76,10 +77,6 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
     }
   }
 
-  void _logout() async {
-    await FirebaseAuth.instance.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,10 +88,22 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
           style: TextStyle(color: primary, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.person, color: primary),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          },
+          tooltip: 'الملف الشخصي',
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.red),
-            onPressed: _logout,
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
             tooltip: 'تسجيل الخروج',
           ),
         ],
@@ -143,7 +152,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                   return const Center(
                     child: Text(
                       'لا توجد منشورات بعد، كن أول من ينشر! 🚀',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   );
                 }

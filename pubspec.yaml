@@ -4,11 +4,11 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '^3.3.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.17.8
-  cloud_firestore: ^4.16.0
+  firebase_core: 1.10.6
+  firebase_auth: 3.2.0
+  cloud_firestore: 3.1.5

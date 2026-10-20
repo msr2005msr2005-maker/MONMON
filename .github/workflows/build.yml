@@ -1,37 +1,38 @@
-name: Build MONMON APK
+name: Flutter Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.0'
-        channel: 'stable'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0' # أو الإصدار الذي تفضله
 
-   - name: Get dependencies
-     run: flutter pub get 
+      # هنا تم تعديل الأمر وإضافة البيئة البرمجية لمنع فحص المجلدات الفرعية القديمة تماماً
+      - name: Get dependencies
+        run: flutter pub get
+        env:
+          PUB_CACHE: ${{ github.workspace }}/.pub-cache
+          FLUTTER_SUPPRESS_ANALYTICS: "true"
 
-    - name: Build APK release
-      run: flutter build apk --release
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-release
-        path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Build APK
+        run: flutter build apk --release --no-pub

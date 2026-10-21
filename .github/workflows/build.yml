@@ -1,3 +1,4 @@
+
 name: Flutter Build APK
 
 on:
@@ -7,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -26,14 +28,60 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
+          channel: stable
+          cache: true
 
-      # هذا الأمر المعدل يجبر فلاتر على تخطي فحص مجلدات الأندرويد الداخلية أثناء جلب الحزم
+      - name: Generate clean Android project
+        run: |
+          mkdir -p /tmp/monmon-backup
+          cp android/app/google-services.json /tmp/monmon-backup/
+          rm -rf android
+
+          flutter create \
+            --platforms=android \
+            --org com.example \
+            --project-name monmon \
+            .
+
+          cp /tmp/monmon-backup/google-services.json android/app/
+
+      - name: Configure Firebase Android
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          settings = Path("android/settings.gradle")
+          content = settings.read_text()
+          marker = "plugins {"
+          assert marker in content, "Settings plugins block not found"
+          content = content.replace(
+              marker,
+              marker + '\n    id "com.google.gms.google-services" version "4.4.1" apply false',
+              1
+          )
+          settings.write_text(content)
+
+          app = Path("android/app/build.gradle")
+          content = app.read_text()
+          assert marker in content, "App plugins block not found"
+          content = content.replace(
+              marker,
+              marker + '\n    id "com.google.gms.google-services"',
+              1
+          )
+          app.write_text(content)
+          PY
+
       - name: Get dependencies
-        run: flutter pub get --no-example
-        env:
-          PUB_CACHE: ${{ github.workspace }}/.pub-cache
-          FLUTTER_SUPPRESS_ANALYTICS: "true"
+        run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release --no-pub
-        
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MONMON-Android-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
